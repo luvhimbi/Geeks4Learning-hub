@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <title>Please Log In</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 150px;
+      max-height: 150px;
+    }
+
+    form {
+      max-width: 300px;
+      margin: auto;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <img th:src="@{/images/Logo.png}" alt="Logo" class="logo">
+  <h1 class="mt-5">Log In</h1>
+  <div th:if="${param.error}" class="alert alert-danger">
+    Invalid username and password.
+  </div>
+  <div th:if="${param.logout}" class="text-success">
+    You have been logged out.
+  </div>
+  <form th:action="@{/login}" method="post" id="loginForm" class="needs-validation" novalidate>
+    <div class="form-group">
+      <input type="email" id="email-address" name="username" class="form-control" placeholder="Email Address" required>
+      <div class="invalid-feedback">
+        Please enter your username.
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="password" id="password" name="password" class="form-control"  placeholder="Password" required>
+      <div class="invalid-feedback">
+        Please enter your password.
+      </div>
+    </div>
+    <div class="error-message"></div>
+    <p>Forget password? <a href="#">Click here </a>to reset</p>
+    <button type="submit" class="btn btn-primary">Log in</button>
+    <p>New user <a th:href="@{/Register}">Click here </a>to register</p>
+  </form>
+</div>
+<script>
+  function showValid(input) {
+    const errorDiv = input.nextElementSibling;
+    errorDiv.innerHTML = "";
+    input.classList.remove("is-invalid");
+    input.classList.add("is-valid");
+  }
+
+  function showError(input, message) {
+    const errorDiv = input.nextElementSibling;
+    errorDiv.innerHTML = message;
+    input.classList.remove("is-valid");
+    input.classList.add("is-invalid");
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    validateEmail(document.getElementById("email-address"));
+    validatePassword(document.getElementById("password"));
+    this.classList.add("was-validated");
+  },false);
+
+  function validateEmail(input) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(input.value)) {
+      showValid(input);
+    } else {
+      showError(input, "Please enter a valid email address.");
+    }
+  }
+
+  function validatePassword(input) {
+    const password = input.value;
+    const hasLetters = /[a-zA-Z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+
+    if (password.length >= 6 && hasLetters && hasNumbers) {
+      showValid(input);
+    } else {
+      showError(input, "Please enter a valid password (at least 6 characters with letters and numbers).");
+    }
+  }
+</script>
+</body>
+</html>
